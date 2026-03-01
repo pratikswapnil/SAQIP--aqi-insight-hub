@@ -1,0 +1,89 @@
+:root {
+    --aqi-green: #10B981;
+    --aqi-yellow: #FBBF24;
+    --aqi-orange: #F97316;
+    --aqi-red: #EF4444;
+    --aqi-purple: #7E22CE;
+    --aqi-maroon: #7F1D1D;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    overflow-x: hidden;
+    font-size: 14px;
+}
+
+.view-section {
+    transition: opacity 0.2s ease-in-out;
+}
+
+.nav-link {
+    @apply text-slate-600 hover:text-emerald-600 font-bold transition-all cursor-pointer text-[12px] uppercase tracking-wider py-2 px-1;
+}
+
+.nav-link.active {
+    @apply text-emerald-600 border-b-2 border-emerald-600;
+}
+
+/* Toast System */
+.toast-message {
+    animation: slideIn 0.3s ease-out;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Leaflet Overrides */
+.leaflet-container {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.aqi-custom-popup .leaflet-popup-content-wrapper {
+    @apply rounded-xl border border-slate-200 shadow-2xl p-0 overflow-hidden;
+}
+
+.aqi-custom-popup .leaflet-popup-content {
+    margin: 12px !important;
+    line-height: 1.4 !important;
+}
+
+.aqi-custom-popup .leaflet-popup-tip-container {
+    display: none;
+}
+
+/* Mobile Responsiveness for Selects */
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Chart adjustments */
+.js-plotly-plot .plotly .modebar {
+    display: none !important;
+}

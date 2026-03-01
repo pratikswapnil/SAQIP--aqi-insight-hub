@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Insight Hub | Data-Driven Environmental Action</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#F3F4F6] text-slate-900 font-['Inter'] antialiased">
+    <div id="toast-container" class="fixed top-20 right-6 z-[2000] flex flex-col gap-3"></div>
+    
+    <div id="app" class="min-h-screen flex flex-col">
+        <header id="navbar-container" class="sticky top-0 z-[1001] bg-white/90 backdrop-blur-md border-b border-slate-200"></header>
+
+        <main id="main-content" class="flex-grow">
+            <section id="view-home" class="view-section"></section>
+            <section id="view-explorer" class="view-section hidden px-6 py-8 md:p-8 max-w-7xl mx-auto w-full"></section>
+            <section id="view-map" class="view-section hidden h-[calc(100vh-64px)] w-full"></section>
+        </main>
+
+        <footer class="bg-white border-t border-slate-200 py-10 px-6 mt-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="text-center md:text-left">
+                        <p class="font-bold text-slate-900 mb-1">AQI Hub India v1.0</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Data Attribution: OpenAQ Platform & WAQI API</p>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-8 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        <a href="#" class="hover:text-emerald-600">Methodology</a>
+                        <a href="#" class="hover:text-emerald-600">Documentation</a>
+                        <a href="#" class="hover:text-emerald-600">Terms</a>
+                    </div>
+                </div>
+                <div class="mt-8 pt-8 border-t border-slate-50 text-center">
+                    <p class="text-[10px] text-slate-400">© 2026 Environmental Analytics Group. Open Source Research Project.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
