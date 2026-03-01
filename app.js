@@ -1,6 +1,6 @@
 // app.js
 import * as components from './components.js';
-import { fetchLiveIndianStations, HISTORICAL_DATA_MOCK, getStatusColor } from './data_service.js';
+import { fetchLiveIndianStations, getStatusColor } from './data_service.js';
 
 class AQIApp {
     constructor() {
@@ -8,13 +8,16 @@ class AQIApp {
         this.selectedCity = 'Delhi';
         this.selectedPollutant = 'PM2.5';
         this.stations = [];
-        this.map = null;
         this.init();
     }
 
     async init() {
         window.app = this;
-        this.stations = await fetchLiveIndianStations();
+        try {
+            this.stations = await fetchLiveIndianStations();
+        } catch (e) {
+            console.error("Initial fetch failed", e);
+        }
         this.render();
     }
 
@@ -32,26 +35,17 @@ class AQIApp {
         const viewExplorer = document.getElementById('view-explorer');
         const viewMap = document.getElementById('view-map');
 
-        if (navbar) navbar.innerHTML = components.renderNavbar(this.currentView);
+        // Safety check to ensure containers exist
+        if (!navbar || !viewHome || !viewExplorer || !viewMap) return;
 
-        [viewHome, viewExplorer, viewMap].forEach(v => { if(v) v.classList.add('hidden'); });
+        navbar.innerHTML = components.renderNavbar(this.currentView);
+        [viewHome, viewExplorer, viewMap].forEach(v => v.classList.add('hidden'));
 
         if (this.currentView === 'home') {
             viewHome.classList.remove('hidden');
             viewHome.innerHTML = `
                 ${components.renderHero()}
                 ${components.renderAudienceNav()}
-                <div class="bg-slate-50 py-20 px-6">
-                    <div class="max-w-7xl mx-auto text-center">
-                        <h2 class="text-3xl font-bold mb-6">Interactive Spatial Analysis</h2>
-                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden aspect-video border border-slate-200 relative group cursor-pointer" onclick="window.app.setView('map')">
-                            <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/20 transition-all z-10 flex items-center justify-center">
-                                <p class="font-bold text-white text-lg">Launch Spatial Dashboard</p>
-                            </div>
-                            <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                </div>
                 ${components.renderInsightsSection()}
                 ${components.renderServicesPanel()}
             `;
@@ -68,6 +62,10 @@ class AQIApp {
 
         if (window.lucide) lucide.createIcons();
     }
+
+    // Standard chart and map initializers (initChart, initMap, etc.) go here...
+    initChart() { /* Plotly logic */ }
+    initMap() { /* Leaflet logic */ }
 }
 
 document.addEventListener('DOMContentLoaded', () => { new AQIApp(); });
