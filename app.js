@@ -6,26 +6,19 @@ class AQIApp {
     constructor() {
         this.currentView = 'home';
         this.selectedCity = 'Delhi';
-        this.selectedPollutant = 'PM2.5';
         this.stations = [];
         this.init();
     }
 
     async init() {
         window.app = this;
-        try {
-            this.stations = await fetchLiveIndianStations();
-        } catch (e) {
-            console.error("Initialization failed", e);
-        }
+        this.stations = await fetchLiveIndianStations();
         this.render();
     }
 
     setView(view) {
         this.currentView = view;
         this.render();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (view === 'explorer') this.initChart();
         if (view === 'map') this.initMap();
     }
 
@@ -35,22 +28,15 @@ class AQIApp {
         const viewExplorer = document.getElementById('view-explorer');
         const viewMap = document.getElementById('view-map');
 
-        if (!navbar || !viewHome || !viewExplorer || !viewMap) return;
-
         navbar.innerHTML = components.renderNavbar(this.currentView);
         [viewHome, viewExplorer, viewMap].forEach(v => v.classList.add('hidden'));
 
         if (this.currentView === 'home') {
             viewHome.classList.remove('hidden');
-            viewHome.innerHTML = `
-                ${components.renderHero()}
-                ${components.renderAudienceNav()}
-                ${components.renderInsightsSection()}
-                ${components.renderServicesPanel()}
-            `;
+            viewHome.innerHTML = components.renderHero() + components.renderAudienceNav();
         } else if (this.currentView === 'explorer') {
             viewExplorer.classList.remove('hidden');
-            viewExplorer.innerHTML = components.renderExplorerView(this.selectedCity, this.selectedPollutant);
+            viewExplorer.innerHTML = components.renderExplorerView(this.selectedCity);
         } else if (this.currentView === 'map') {
             viewMap.classList.remove('hidden');
             viewMap.innerHTML = components.renderMapView();
@@ -58,12 +44,9 @@ class AQIApp {
             viewHome.classList.remove('hidden');
             viewHome.innerHTML = components.renderMethodologyView();
         }
-
-        if (window.lucide) lucide.createIcons();
     }
 
-    initChart() { /* Plotly logic here */ }
-    initMap() { /* Leaflet logic here */ }
+    initMap() { /* Leaflet logic here using this.stations */ }
 }
 
 document.addEventListener('DOMContentLoaded', () => { new AQIApp(); });
