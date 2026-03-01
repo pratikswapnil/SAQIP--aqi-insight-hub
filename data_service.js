@@ -1,9 +1,13 @@
 // data_service.js
 const OPENAQ_API = "https://api.openaq.org/v2/latest";
+// Proxy to bypass CORS errors on Vercel
+const PROXY_URL = "https://api.allorigins.win/raw?url=";
 
 export async function fetchLiveIndianStations() {
     try {
-        const response = await fetch(`${OPENAQ_API}?country=IN&limit=50&parameter=pm25`);
+        const targetUrl = `${OPENAQ_API}?country=IN&limit=50&parameter=pm25`;
+        const response = await fetch(PROXY_URL + encodeURIComponent(targetUrl));
+        
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         
@@ -22,7 +26,11 @@ export async function fetchLiveIndianStations() {
         });
     } catch (error) {
         console.error("API Fetch Error - Falling back to local data:", error);
-        return []; // Returns empty array to prevent application crash
+        // Fallback to a single mock entry to prevent a blank map
+        return [{
+            id: 'delhi-fallback', city: 'Delhi (Live Data Pending)', aqi: 150, 
+            status: 'Moderate', pm25: '150.0', lat: 28.6139, lng: 77.2090
+        }];
     }
 }
 
