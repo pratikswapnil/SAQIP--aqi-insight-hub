@@ -4,6 +4,7 @@ const OPENAQ_API = "https://api.openaq.org/v2/latest";
 export async function fetchLiveIndianStations() {
     try {
         const response = await fetch(`${OPENAQ_API}?country=IN&limit=50&parameter=pm25`);
+        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         
         return data.results.map(result => {
@@ -20,8 +21,8 @@ export async function fetchLiveIndianStations() {
             };
         });
     } catch (error) {
-        console.error("API Fetch Error:", error);
-        return []; 
+        console.error("API Fetch Error - Falling back to local data:", error);
+        return []; // Returns empty array to prevent application crash
     }
 }
 
