@@ -19,6 +19,7 @@ class AQIApp {
     setView(view) {
         this.currentView = view;
         this.render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         if (view === 'map') this.initMap();
     }
 
@@ -28,8 +29,8 @@ class AQIApp {
         const viewExplorer = document.getElementById('view-explorer');
         const viewMap = document.getElementById('view-map');
 
-        navbar.innerHTML = components.renderNavbar(this.currentView);
-        [viewHome, viewExplorer, viewMap].forEach(v => v.classList.add('hidden'));
+        if (navbar) navbar.innerHTML = components.renderNavbar(this.currentView);
+        [viewHome, viewExplorer, viewMap].forEach(v => { if(v) v.classList.add('hidden'); });
 
         if (this.currentView === 'home') {
             viewHome.classList.remove('hidden');
@@ -44,9 +45,25 @@ class AQIApp {
             viewHome.classList.remove('hidden');
             viewHome.innerHTML = components.renderMethodologyView();
         }
+
+        if (window.lucide) lucide.createIcons();
     }
 
-    initMap() { /* Leaflet logic here using this.stations */ }
+    initMap() {
+        if (!document.getElementById('map-canvas')) return;
+        if (this.map) this.map.remove();
+        this.map = L.map('map-canvas').setView([22.9734, 78.6569], 5);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(this.map);
+        
+        this.stations.forEach(s => {
+            const color = getStatusColor(s.aqi);
+            const icon = L.divIcon({
+                html: `<div class="w-6 h-6 rounded-full border-2 border-white shadow flex items-center justify-center text-[10px] font-bold text-white" style="background-color: ${color}">${s.aqi}</div>`,
+                className: 'custom-icon', iconSize: [24, 24]
+            });
+            L.marker([s.lat, s.lng], { icon }).addTo(this.map).bindPopup(`<b>${s.city}</b><br>PM2.5: ${s.pm25}`);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => { new AQIApp(); });
