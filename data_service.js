@@ -1,16 +1,18 @@
 // data_service.js
 const OPENAQ_API = "https://api.openaq.org/v2/latest";
+// Proxy to bypass CORS errors on Vercel
 const PROXY_URL = "https://api.allorigins.win/raw?url=";
 
-// Keep this export so other files don't crash
+// Restored to prevent import errors in components.js
 export const MOCK_STATIONS = [
-    { id: 'delhi-fallback', city: 'Delhi', aqi: 150, status: 'Moderate', pm25: 150.0, lat: 28.6139, lng: 77.2090 }
+    { id: 'delhi-01', city: 'Delhi', aqi: 150, status: 'Moderate', pm25: 150.0, lat: 28.6139, lng: 77.2090 }
 ];
 
 export async function fetchLiveIndianStations() {
     try {
         const targetUrl = `${OPENAQ_API}?country=IN&limit=50&parameter=pm25`;
         const response = await fetch(PROXY_URL + encodeURIComponent(targetUrl));
+        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         
         return data.results.map(result => {
@@ -26,7 +28,7 @@ export async function fetchLiveIndianStations() {
             };
         });
     } catch (error) {
-        console.error("API Error:", error);
+        console.error("API Fetch Error - Using fallback:", error);
         return MOCK_STATIONS;
     }
 }
