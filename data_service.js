@@ -26,7 +26,7 @@ export async function fetchLiveIndianStations() {
         });
     } catch (error) {
         console.error("API Fetch Error - Falling back to local data:", error);
-        // Fallback to a single mock entry to prevent a blank map
+        // Fallback to avoid a blank screen
         return [{
             id: 'delhi-fallback', city: 'Delhi (Live Data Pending)', aqi: 150, 
             status: 'Moderate', pm25: '150.0', lat: 28.6139, lng: 77.2090
