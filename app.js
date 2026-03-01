@@ -13,8 +13,11 @@ class AQIApp {
 
     async init() {
         window.app = this;
-        // Fetch live data on startup with CORS proxy
-        this.stations = await fetchLiveIndianStations();
+        try {
+            this.stations = await fetchLiveIndianStations();
+        } catch (e) {
+            console.error("Initialization failed", e);
+        }
         this.render();
     }
 
@@ -22,12 +25,8 @@ class AQIApp {
         this.currentView = view;
         this.render();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        if (view === 'explorer') {
-            this.initChart();
-        } else if (view === 'map') {
-            this.initMap();
-        }
+        if (view === 'explorer') this.initChart();
+        if (view === 'map') this.initMap();
     }
 
     render() {
@@ -36,31 +35,18 @@ class AQIApp {
         const viewExplorer = document.getElementById('view-explorer');
         const viewMap = document.getElementById('view-map');
 
-        if (navbar) navbar.innerHTML = components.renderNavbar(this.currentView);
+        if (!navbar || !viewHome || !viewExplorer || !viewMap) return;
 
-        // Hide all views first
-        [viewHome, viewExplorer, viewMap].forEach(v => {
-            if (v) v.classList.add('hidden');
-        });
+        navbar.innerHTML = components.renderNavbar(this.currentView);
+        [viewHome, viewExplorer, viewMap].forEach(v => v.classList.add('hidden'));
 
         if (this.currentView === 'home') {
             viewHome.classList.remove('hidden');
             viewHome.innerHTML = `
                 ${components.renderHero()}
                 ${components.renderAudienceNav()}
-                <div class="bg-slate-50 py-20 px-6">
-                    <div class="max-w-7xl mx-auto text-center">
-                        <h2 class="text-3xl font-bold mb-6">Interactive Spatial Analysis</h2>
-                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden aspect-video border border-slate-200 relative group cursor-pointer" onclick="window.app.setView('map')">
-                            <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/20 transition-all z-10 flex items-center justify-center">
-                                <p class="font-bold text-white text-lg">Launch Spatial Dashboard</p>
-                            </div>
-                            <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                </div>
-                ${components.renderInsightsSection ? components.renderInsightsSection() : ''}
-                ${components.renderServicesPanel ? components.renderServicesPanel() : ''}
+                ${components.renderInsightsSection()}
+                ${components.renderServicesPanel()}
             `;
         } else if (this.currentView === 'explorer') {
             viewExplorer.classList.remove('hidden');
@@ -76,9 +62,8 @@ class AQIApp {
         if (window.lucide) lucide.createIcons();
     }
 
-    // Include your initChart and initMap functions here as per previous versions
+    initChart() { /* Plotly logic here */ }
+    initMap() { /* Leaflet logic here */ }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    new AQIApp();
-});
+document.addEventListener('DOMContentLoaded', () => { new AQIApp(); });
