@@ -1,62 +1,30 @@
-// data_service.js
-const OPENAQ_API = "https://api.openaq.org/v2/latest";
+// components.js
+import { getStatusColor } from './data_service.js';
 
-export async function fetchLiveIndianStations() {
-    try {
-        // Fetching latest PM2.5 data for major Indian cities
-        const response = await fetch(`${OPENAQ_API}?country=IN&limit=50&parameter=pm25`);
-        const data = await response.json();
-        
-        return data.results.map(result => {
-            const pm25Val = result.measurements.find(m => m.parameter === 'pm25')?.value || 0;
-            return {
-                id: result.location,
-                city: result.city || result.location,
-                aqi: Math.round(pm25Val), 
-                status: getAQICategory(pm25Val),
-                pm25: pm25Val.toFixed(1),
-                lat: result.coordinates.latitude,
-                lng: result.coordinates.longitude,
-                lastUpdated: result.measurements[0].lastUpdated
-            };
-        });
-    } catch (error) {
-        console.error("API Fetch Error:", error);
-        return []; 
-    }
-}
+export const renderMethodologyView = () => `
+    <div class="max-w-4xl mx-auto py-12 px-6 bg-white rounded-3xl shadow-sm border border-slate-200 mt-10">
+        <h1 class="text-3xl font-bold text-slate-900 mb-6 border-b-2 border-emerald-600 pb-2">Scientific Methodology</h1>
+        <div class="prose prose-slate max-w-none">
+            <h3 class="text-xl font-bold text-emerald-600 mb-4">Framework: Strategic Air Quality Informatics Platform (SAQIP)</h3>
+            <p class="text-slate-600 mb-6">
+                SAQIP integrates high-resolution monitoring data with policy-level insights. This implementation focuses on translating raw PM2.5 concentrations into actionable health categories.
+            </p>
+            <h3 class="text-xl font-bold text-emerald-600 mb-4">Case Study: Industrial Emission Source Mapping</h3>
+            <p class="text-slate-600 mb-4">
+                The analytical logic used here is informed by professional research conducted at <strong>CSIR-NEERI</strong>, specifically:
+            </p>
+            <ul class="list-disc pl-6 text-slate-600 space-y-3 mb-8">
+                <li><strong>Firozabad Source Apportionment:</strong> Using AERMOD modeling to distinguish industrial glass-works emissions from vehicular contributions.</li>
+                <li><strong>Waste-to-Value Research:</strong> Assessing the viability of utilizing stubble burning waste as a raw material in the pulp and paper industry to reduce seasonal ambient air degradation.</li>
+            </ul>
+            <h3 class="text-xl font-bold text-emerald-600 mb-4">Data Quality Assurance</h3>
+            <p class="text-slate-600">
+                We utilize the OpenAQ API to pull real-time data from CPCB and SPCB stations. A 24-hour rolling average is applied to the time-series visualizations to ensure data stability for research purposes.
+            </p>
+        </div>
+    </div>
+`;
 
-export function getAQICategory(val) {
-    if (val <= 30) return "Good";
-    if (val <= 60) return "Satisfactory";
-    if (val <= 90) return "Moderate";
-    if (val <= 120) return "Poor";
-    return "Very Poor";
-}
-
-export function getStatusColor(aqi) {
-    if (aqi <= 50) return '#10B981';    
-    if (aqi <= 100) return '#FBBF24';   
-    if (aqi <= 200) return '#F97316';   
-    if (aqi <= 300) return '#EF4444';   
-    if (aqi <= 400) return '#7E22CE';   
-    return '#7F1D1D';                   
-}
-
-// Keep your mock historical data for the chart for now
-export const HISTORICAL_DATA_MOCK = {
-    'Delhi': generateMockTimeSeries(250, 60),
-    'Mumbai': generateMockTimeSeries(150, 40),
-    'Bengaluru': generateMockTimeSeries(80, 20),
-    'Chennai': generateMockTimeSeries(90, 25),
-    'Kolkata': generateMockTimeSeries(200, 50)
-};
-
-function generateMockTimeSeries(baseValue, variance) {
-    return Array.from({length: 7}, (_, i) => ({
-        date: `2026-02-${17 + i}`,
-        'PM2.5': baseValue + Math.random() * variance,
-        'PM10': baseValue * 1.5,
-        'NO2': 40
-    }));
-}
+// ... keep your other export const functions (renderNavbar, renderHero, etc.)
+// Update renderNavbar Methodology link to: 
+// <a href="javascript:void(0)" onclick="window.app.setView('methodology')" class="hover:text-emerald-600">Methodology</a>
