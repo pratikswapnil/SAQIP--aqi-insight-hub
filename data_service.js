@@ -3,7 +3,6 @@ const OPENAQ_API = "https://api.openaq.org/v2/latest";
 
 export async function fetchLiveIndianStations() {
     try {
-        // Fetching latest PM2.5 data for major Indian cities
         const response = await fetch(`${OPENAQ_API}?country=IN&limit=50&parameter=pm25`);
         const data = await response.json();
         
@@ -43,7 +42,6 @@ export function getStatusColor(aqi) {
     return '#7F1D1D';                   
 }
 
-// Keep your mock historical data for the chart for now
 export const HISTORICAL_DATA_MOCK = {
     'Delhi': generateMockTimeSeries(250, 60),
     'Mumbai': generateMockTimeSeries(150, 40),
